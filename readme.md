@@ -42,6 +42,7 @@ Funkcje:
 ```git clone https://github.com/użytkownik/repozytorium.git```
 
 ## Link do artykułu na blogu:
+[If-else w JavaScript - od prostych warunków do praktycznych aplikacji](https://opengateweb.com/posts/if-i-else-w-javascript-od-prostych-warunkow-do-praktycznych-aplikacji/)  
 
 ⭐ Podoba Ci się?
 Jeśli ten przewodnik Ci pomógł:
@@ -59,4 +60,5 @@ Napisz: [piotr.adamkowski@gmail.com]
 
 
 Happy Coding! 🚀
+
 
