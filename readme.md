@@ -42,3 +42,21 @@ Funkcje:
 ```git clone https://github.com/użytkownik/repozytorium.git```
 
 ## Link do artykułu na blogu:
+
+⭐ Podoba Ci się?
+Jeśli ten przewodnik Ci pomógł:
+
+Zostaw ⭐ na GitHub
+Udostępnij znajomym
+Stwórz własne wariacje przykładów
+
+🤝 Wsparcie
+Masz pytania lub sugestie?
+
+Otwórz Issue
+Stwórz Pull Request
+Napisz: [piotr.adamkowski@gmail.com]
+
+
+Happy Coding! 🚀
+
