@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator kosztów paliwa</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 450px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      font-weight: 300;
+    }
+
+    .fuel-icon {
+      text-align: center;
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 1.1em;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .calculate-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .calculate-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 1.1em;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result.ok {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+      border-left: 5px solid #2E7D32;
+    }
+
+    .result.warn {
+      background: linear-gradient(45deg, #FF9800, #F57C00);
+      color: white;
+      border-left: 5px solid #E65100;
+    }
+
+    .result.err {
+      background: linear-gradient(45deg, #f44336, #d32f2f);
+      color: white;
+      border-left: 5px solid #B71C1C;
+    }
+
+    .result-line {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .result-line:before {
+      content: "▶";
+      margin-right: 10px;
+      font-size: 0.8em;
+    }
+
+    .reset-btn {
+      width: 100%;
+      padding: 12px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .reset-btn:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px;
+        margin: 10px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      input[type="number"],
+      .calculate-btn {
+        padding: 12px;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="fuel-icon">⛽</div>
+    <h1>Kalkulator kosztów paliwa</h1>
+
+    <form id="fuelForm">
+      <div class="form-group">
+        <label for="distance">Dystans (km):</label>
+        <input type="number" id="distance" step="0.1" min="0" placeholder="np. 120">
+      </div>
+
+      <div class="form-group">
+        <label for="consumption">Spalanie (l/100km):</label>
+        <input type="number" id="consumption" step="0.1" min="0" placeholder="np. 7.5">
+      </div>
+
+      <div class="form-group">
+        <label for="price">Cena paliwa (zł/l):</label>
+        <input type="number" id="price" step="0.01" min="0" placeholder="np. 6.50">
+      </div>
+
+      <button type="submit" class="calculate-btn">
+        🚗 Oblicz koszt
+      </button>
+    </form>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function analyzeTrip(d, c, p) {
+      if (!d || !c || !p) {
+        return { cls: 'err', lines: ['Wpisz wszystkie dane'] };
+      }
+      const liters = (d * c) / 100;
+      const cost = liters * p;
+
+      let msg, cls;
+      if (cost < 50) {
+        msg = 'Tani przejazd';
+        cls = 'ok';
+      } else if (cost < 150) {
+        msg = 'Średni koszt';
+        cls = 'warn';
+      } else {
+        msg = 'Drogo';
+        cls = 'err';
+      }
+
+      return {
+        cls,
+        lines: [
+          `Dystans: ${d} km`,
+          `Zużycie paliwa: ${liters.toFixed(1)} l`,
+          `Koszt: ${cost.toFixed(2)} zł`,
+          msg
+        ]
+      };
+    }
+
+    document.getElementById('fuelForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const distance = parseFloat(document.getElementById('distance').value);
+      const consumption = parseFloat(document.getElementById('consumption').value);
+      const price = parseFloat(document.getElementById('price').value);
+
+      const result = analyzeTrip(distance, consumption, price);
+      const resultDiv = document.getElementById('result');
+
+      resultDiv.className = `result ${result.cls}`;
+      resultDiv.innerHTML = result.lines.map(line =>
+        `<div class="result-line">${line}</div>`
+      ).join('') + `<button class="reset-btn" onclick="resetForm()">🔄 Nowe obliczenie</button>`;
+
+      setTimeout(() => {
+        resultDiv.classList.add('show');
+      }, 100);
+    });
+
+    function resetForm() {
+      document.getElementById('fuelForm').reset();
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('show');
+      setTimeout(() => {
+        resultDiv.innerHTML = '';
+        resultDiv.className = 'result';
+      }, 400);
+      document.getElementById('distance').focus();
+    }
+
+    // Focus na pierwsze pole po załadowaniu strony
+    window.addEventListener('load', function () {
+      document.getElementById('distance').focus();
+    });
+
+    // Dodanie obsługi klawisza Enter w polach input
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          const nextInput = this.parentElement.nextElementSibling?.querySelector('input');
+          if (nextInput) {
+            nextInput.focus();
+          } else {
+            document.querySelector('.calculate-btn').click();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

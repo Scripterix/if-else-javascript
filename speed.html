@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>speedValue</title>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f7fafc;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 36px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 6px;
+    }
+
+    /* nowy kontener, aby input i button były inline */
+    .controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    input[type="number"] {
+      width: 260px;
+      max-width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #e6edf3;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      min-width: 140px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    /* output display (teraz pod kontrolkami, jako blok) */
+    #output {
+      margin-left: 0;
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      min-width: 180px;
+      box-sizing: border-box;
+      display: block;
+      text-align: center;
+      max-width: 320px;
+    }
+
+    /* proste warianty kolorystyczne */
+    .output--info {
+      background: #eef2ff;
+      color: #1e3a8a;
+    }
+
+    .output--safe {
+      background: #ecfdf5;
+      color: #064e3b;
+    }
+
+    .output--warn {
+      background: #fff7ed;
+      color: #92400e;
+    }
+
+    .output--error {
+      background: #fff1f2;
+      color: #9f1239;
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Car Speed</h1>
+
+  <!-- opakowanie, żeby elementy były inline -->
+  <div class="controls">
+    <input type="number" placeholder="Wstaw prędkość (km/h)" id="speedValue" min="0" />
+    <button onclick="checkMySpeed()" type="button" id="btnSubmit">Sprawdź</button>
+  </div>
+
+  <!-- output przeniesiony poniżej kontrolek -->
+  <div id="output" aria-live="polite"></div>
+
+  <script>
+    function checkMySpeed() {
+      const inputField = Number(document.getElementById("speedValue").value);
+      const outputEl = document.getElementById("output");
+      // reset classes
+      outputEl.className = "";
+
+      let message = "";
+
+      if (Number.isNaN(inputField) || inputField <= 0) {
+        message = "Podaj poprawną prędkość (> 0).";
+        outputEl.classList.add("output--error");
+        outputEl.textContent = message;
+        return;
+      } else if (inputField <= 30) {
+        message = "🚶 Ulica osiedlowa — bardzo niska prędkość (≤ 30 km/h)";
+        outputEl.classList.add("output--warn");
+      } else if (inputField <= 50) {
+        message = "🏙️ Miasto — standardowa prędkość (31–50 km/h)";
+        outputEl.classList.add("output--safe");
+      } else if (inputField <= 90) {
+        message = "🌲 Poza miastem — normalna prędkość (51–90 km/h)";
+        outputEl.classList.add("output--safe");
+      } else if (inputField <= 120) {
+        message = "🚄 Droga ekspresowa — szybka (91–120 km/h)";
+        outputEl.classList.add("output--info");
+      } else {
+        message = "🛣️ Autostrada — bardzo szybka (> 120 km/h)";
+        outputEl.classList.add("output--info");
+      }
+
+      // pokaż komunikat razem z wpisaną wartością
+      outputEl.textContent = `${message}  (Wpisano: ${inputField} km/h)`;
+    }
+  </script>
+</body>
+
+</html>

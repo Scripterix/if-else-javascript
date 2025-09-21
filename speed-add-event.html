@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Kontrola prędkości</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: #f7fafc;
+      color: #0f172a;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    input[type="number"],
+    button {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #e6edf3;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      margin-left: 8px;
+    }
+
+    /* wynik */
+    #result {
+      margin: 10px auto;
+      padding: 8px 12px;
+      border-radius: 8px;
+      min-width: 220px;
+      max-width: 480px;
+      display: block;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    /* warianty kolorystyczne (zgodne ze speed.html) */
+    .ok {
+      background: #ecfdf5;
+      color: #064e3b;
+    }
+
+    .warn {
+      background: #fff7ed;
+      color: #92400e;
+    }
+
+    .err {
+      background: #fff1f2;
+      color: #9f1239;
+    }
+
+    /* kontener, aby input i button były wyśrodkowane */
+    .controls {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .text-center {
+      text-align: center;
+      width: 100%;
+      margin: 0;
+    }
+
+
+    @media (max-width: 420px) {
+      body {
+        padding: 12px;
+      }
+
+      input[type="number"],
+      button {
+        width: 100%;
+        display: block;
+        margin: 6px 0;
+      }
+
+      #result {
+        width: 100%;
+        min-width: unset;
+        text-align: center;
+      }
+
+      .controls {
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2 class="text-center">Sprawdź prędkość pojazdu</h2>
+  <div class="controls">
+    <input type="number" id="speed" placeholder="Podaj prędkość (km/h)">
+    <button id="btnCheck">Sprawdź</button>
+  </div>
+  <p id="result"></p>
+
+  <script>
+    function checkSpeed() {
+      const speed = Number(document.getElementById("speed").value);
+      const result = document.getElementById("result");
+
+      let message = "";
+      let cls = "";
+
+      if (speed < 50) {
+        message = "🚦 Miasto – jedziesz zgodnie z przepisami.";
+        cls = "ok";
+      } else if (speed < 90) {
+        message = "🏞️ Trasa podmiejska – uważaj na ograniczenia.";
+        cls = "warn";
+      } else if (speed < 140) {
+        message = "🚗 Droga ekspresowa – zachowaj odstęp.";
+        cls = "warn";
+      } else {
+        message = "🚨 Autostrada – zwolnij, jedziesz za szybko!";
+        cls = "err";
+      }
+
+      result.className = cls;
+      result.textContent = message;
+    }
+
+    // 🔗 Powiązanie przycisku z funkcją
+    const btn = document.getElementById("btnCheck");
+    btn.addEventListener("click", checkSpeed);
+  </script>
+</body>
+
+</html>

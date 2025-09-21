@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walidator liczb</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 50%, #42a5f5 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      font-weight: 300;
+    }
+
+    .number-icon {
+      text-align: center;
+      font-size: 3.5em;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #ff6b6b, #42a5f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 1.1em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 18px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 1.2em;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #ff6b6b;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .validate-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(45deg, #ff6b6b, #ffa726);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .validate-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    .validate-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 15px;
+      font-size: 1.1em;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+      border-left: 6px solid;
+    }
+
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result.ok {
+      background: linear-gradient(135deg, #4CAF50, #66BB6A);
+      color: white;
+      border-left-color: #2E7D32;
+    }
+
+    .result.warn {
+      background: linear-gradient(135deg, #FF9800, #FFB74D);
+      color: white;
+      border-left-color: #E65100;
+    }
+
+    .result.err {
+      background: linear-gradient(135deg, #f44336, #EF5350);
+      color: white;
+      border-left-color: #B71C1C;
+    }
+
+    .result-line {
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .result-line:before {
+      content: "🔍";
+      margin-right: 12px;
+      font-size: 1.2em;
+    }
+
+    .result-line:first-child:before {
+      content: "📝";
+    }
+
+    .result-line:nth-child(2):before {
+      content: "🧮";
+    }
+
+    .result-line:last-child:before {
+      content: "⚖️";
+    }
+
+    .reset-btn {
+      width: 100%;
+      padding: 12px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .reset-btn:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    .examples {
+      background: rgba(66, 165, 245, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      border-left: 4px solid #42a5f5;
+    }
+
+    .examples h3 {
+      color: #1976D2;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .examples p {
+      color: #555;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+
+    .example-values {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .example-btn {
+      background: #42a5f5;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+    }
+
+    .example-btn:hover {
+      background: #1976D2;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px;
+        margin: 10px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      input[type="text"],
+      .validate-btn {
+        padding: 14px;
+        font-size: 1em;
+      }
+
+      .example-values {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="number-icon">🔢</div>
+    <h1>Walidator liczb</h1>
+
+    <form id="validatorForm">
+      <div class="form-group">
+        <label for="numberInput">Wprowadź wartość do sprawdzenia:</label>
+        <input type="text" id="numberInput" placeholder="np. 42, 3.14, abc, 150">
+      </div>
+
+      <button type="submit" class="validate-btn">
+        ✨ Sprawdź wartość
+      </button>
+    </form>
+
+    <div class="examples">
+      <h3>💡 Przykłady do przetestowania:</h3>
+      <p>Kliknij na przykład, aby go wypróbować:</p>
+      <div class="example-values">
+        <button type="button" class="example-btn" onclick="setExample('42')">42</button>
+        <button type="button" class="example-btn" onclick="setExample('3.14')">3.14</button>
+        <button type="button" class="example-btn" onclick="setExample('100')">100</button>
+        <button type="button" class="example-btn" onclick="setExample('150')">150</button>
+        <button type="button" class="example-btn" onclick="setExample('abc')">abc</button>
+        <button type="button" class="example-btn" onclick="setExample('-25')"">-25</button>
+                <button type=" button" class="example-btn" onclick="setExample('0')">0</button>
+      </div>
+    </div>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function analyzeNumber(raw) {
+      if (raw === '' || raw === null || raw === undefined) {
+        return { cls: 'err', lines: ['Wpisz jakąś wartość.'] };
+      }
+      const n = Number(raw);
+      if (Number.isNaN(n)) {
+        return { cls: 'err', lines: ['To nie jest poprawna liczba.'] };
+      }
+
+      const parity = (Number.isInteger(n) && n % 2 === 0) ? 'parzysta'
+        : (Number.isInteger(n) ? 'nieparzysta' : 'niecałkowita');
+      const gt100 = n > 100 ? 'większa niż 100' : (n === 100 ? 'równa 100' : 'nie większa niż 100');
+
+      return {
+        cls: n > 100 ? 'ok' : 'warn',
+        lines: [
+          `Wprowadzono: ${raw}`,
+          Number.isInteger(n) ? `Parzystość: ${parity}` : `Typ: ${parity}`,
+          `Porównanie do 100: ${gt100}`
+        ]
+      };
+    }
+
+    document.getElementById('validatorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const inputValue = document.getElementById('numberInput').value;
+      const result = analyzeNumber(inputValue);
+      const resultDiv = document.getElementById('result');
+
+      resultDiv.className = `result ${result.cls}`;
+      resultDiv.innerHTML = result.lines.map(line =>
+        `<div class="result-line">${line}</div>`
+      ).join('') + `<button class="reset-btn" onclick="resetForm()">🔄 Sprawdź kolejną wartość</button>`;
+
+      setTimeout(() => {
+        resultDiv.classList.add('show');
+      }, 100);
+    });
+
+    function setExample(value) {
+      document.getElementById('numberInput').value = value;
+      document.getElementById('numberInput').focus();
+    }
+
+    function resetForm() {
+      document.getElementById('validatorForm').reset();
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('show');
+      setTimeout(() => {
+        resultDiv.innerHTML = '';
+        resultDiv.className = 'result';
+      }, 400);
+      document.getElementById('numberInput').focus();
+    }
+
+    // Focus na pole input po załadowaniu strony
+    window.addEventListener('load', function () {
+      document.getElementById('numberInput').focus();
+    });
+
+    // Obsługa klawisza Enter
+    document.getElementById('numberInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        document.querySelector('.validate-btn').click();
+      }
+    });
+
+    // Dodanie efektu przy wpisywaniu
+    document.getElementById('numberInput').addEventListener('input', function () {
+      const resultDiv = document.getElementById('result');
+      if (resultDiv.classList.contains('show')) {
+        resultDiv.classList.remove('show');
+        setTimeout(() => {
+          resultDiv.innerHTML = '';
+          resultDiv.className = 'result';
+        }, 300);
+      }
+    });
+  </script>
+</body>
+
+</html>
